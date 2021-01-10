@@ -1,6 +1,5 @@
 ﻿using KPU_Comment_cleaner.Command;
 using KPU_Comment_cleaner.ViewModel.Base;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;

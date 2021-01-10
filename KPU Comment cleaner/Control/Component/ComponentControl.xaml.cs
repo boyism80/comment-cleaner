@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 
 namespace KPU_Comment_cleaner.Control.Component
 {

@@ -51,7 +51,7 @@ namespace KPU_Comment_cleaner.ViewModel
 
         private void NewsItems_Response(object sender, bool result, string message)
         {
-            
+
         }
 
         private void CommentItems_Response(object sender, bool result, string message)
@@ -73,7 +73,7 @@ namespace KPU_Comment_cleaner.ViewModel
                 if (this._logoutDialog != null)
                     return;
 
-                
+
                 //this.ConnectionViewModel.Logout();
 
                 this.DarkBackgroundVisibility = true;
@@ -87,7 +87,7 @@ namespace KPU_Comment_cleaner.ViewModel
             }
             else
             {
-                if(this._loginDialog != null)
+                if (this._loginDialog != null)
                     return;
 
                 this.DarkBackgroundVisibility = true;

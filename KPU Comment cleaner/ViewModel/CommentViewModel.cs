@@ -20,7 +20,7 @@ namespace KPU_Comment_cleaner.ViewModel
 
         public CommentViewModel(ConnectionViewModel owner, JSONNode json) : base(owner, json)
         {
-            
+
         }
 
         protected override Component AllocateComponent(ConnectionViewModel owner, JSONNode json)

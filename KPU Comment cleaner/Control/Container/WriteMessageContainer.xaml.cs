@@ -39,7 +39,7 @@ namespace KPU_Comment_cleaner.Control.Container
 
         private void Component_Remove(object sender, EventArgs e)
         {
-            if(this.RemoveCommand.CanExecute(sender))
+            if (this.RemoveCommand.CanExecute(sender))
                 this.RemoveCommand.Execute(sender);
         }
 

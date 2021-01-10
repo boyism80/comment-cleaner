@@ -11,7 +11,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static KPU_Comment_cleaner.ViewModel.NewsViewModel;
 
 namespace KPU_Comment_cleaner.ViewModel
 {
