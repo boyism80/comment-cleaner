@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="KPU_Comment_cleaner.Control.Component.NewsComponent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:KPU_Comment_cleaner.Control.Component"
+             mc:Ignorable="d" 
+             d:DesignWidth="400">
+    <Border Padding="10">
+        <Border>
+            <StackPanel Orientation="Vertical">
+                <TextBlock 
+                        Text="{Binding Title, FallbackValue=Comment news title}"
+                        TextTrimming="WordEllipsis"
+                        Foreground="White"
+                        FontWeight="Bold"/>
+                <TextBlock 
+                        Text="{Binding Content, FallbackValue=news content}"
+                        TextTrimming="WordEllipsis"
+                        Margin="0 5 0 10"
+                        Foreground="Gray"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Show in browser"
+                            Style="{StaticResource BorderRadiusButton}"
+                            Command="{Binding ShowCommand}"
+                            Margin="0 0 8 0"/>
+                    <Button Content="Delete"
+                            Style="{StaticResource BorderRadiusButton}"
+                            Command="{Binding DeleteCommand}"
+                            Margin="0 0 8 0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Border>
+</UserControl>

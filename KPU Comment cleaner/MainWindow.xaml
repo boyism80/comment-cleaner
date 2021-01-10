@@ -1,0 +1,411 @@
+﻿<Window x:Class="KPU_Comment_cleaner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KPU_Comment_cleaner"
+        xmlns:vm="clr-namespace:KPU_Comment_cleaner.ViewModel"
+        xmlns:control="clr-namespace:KPU_Comment_cleaner.Control"
+        xmlns:container="clr-namespace:KPU_Comment_cleaner.Control.Container"
+        xmlns:component="clr-namespace:KPU_Comment_cleaner.Control.Component"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        MaxWidth="1024"
+        Height="700" Width="1024"
+        Closed="Window_Closed">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type local:MainWindow}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}" >
+                        <Border Padding="0">
+                            <Grid>
+                                <!-- Window border and dropshadown -->
+                                <Border>
+                                    <Border.Effect>
+                                        <DropShadowEffect ShadowDepth="0" Opacity="0.2" />
+                                    </Border.Effect>
+                                </Border>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <Border Grid.Row="0" Padding="5" Background="{StaticResource DefaultBackgroundBrush}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Button Grid.Column="0"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Margin="5" >
+                                                <ContentControl>
+                                                    <!--<Image Source="/Images/icon_caption.png"
+                                                           RenderOptions.BitmapScalingMode="HighQuality"/>-->
+                                                </ContentControl>
+                                            </Button>
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                <control:IconButton Style="{StaticResource SystemButton}"
+                                                                     Icon="/Image/minimize.png"
+                                                                     Background="{StaticResource DefaultBackgroundBrush}"
+                                                                     HoverBackground="{StaticResource LightBackgroundBrush}"
+                                                                     Command="{Binding SetMinimizeCommand}" />
+                                                <control:IconButton Style="{StaticResource SystemButton}"
+                                                                  Icon="/Image/close.png"
+                                                                  Background="{StaticResource DefaultBackgroundBrush}"
+                                                                  HoverBackground="{StaticResource LightBackgroundBrush}"
+                                                                  Command="{Binding CloseCommand}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
+                                    <Grid Grid.Row="2">
+                                        <ContentPresenter Content="{TemplateBinding Content}" />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid Background="Black"
+                                      Opacity="0.5"
+                                      Visibility="{c:Binding DarkBackgroundVisibility}"
+                                      IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+            ResizeBorderThickness="10"
+            CaptionHeight="30"
+            CornerRadius="0"
+            GlassFrameThickness="0"/>
+    </WindowChrome.WindowChrome>
+
+    <Border Background="{StaticResource DefaultBackgroundBrush}"
+            Padding="30 20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Margin="0 0 0 10">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <ComboBox IsEnabled="{c:Binding '!CommentCleanerViewModel.IsRunning and !CommentWriterViewModel.IsRunning'}"
+                              SelectedValuePath="Tag"
+                              SelectedIndex="{Binding TabSelected, FallbackValue=0}"
+                              Style="{StaticResource NewsTypeComboBox}">
+                        <ComboBoxItem Content="Cleaner" Tag="0" />
+                        <ComboBoxItem Content="Writer" Tag="1" />
+                    </ComboBox>
+                    <Button Content="{Binding ConnectionViewModel.IdText, FallbackValue=boyism80@naver.com}"
+                            Style="{StaticResource OperationButton}"
+                            Width="Auto"
+                            Command="{Binding LoginCommand}"/>
+                </StackPanel>
+            </Border>
+            <TabControl Grid.Row="1"
+                        SelectedIndex="{Binding TabSelected}"
+                        BorderThickness="0"
+                        Background="Transparent">
+                <TabItem Visibility="Collapsed"
+                         DataContext="{Binding CommentCleanerViewModel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <Border Grid.Row="0"
+                                Grid.Column="0">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="KPU Comment Cleaner"
+                                           Style="{StaticResource TabTitle}"/>
+                                <TextBlock Style="{StaticResource TabDesc}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="0"
+                                Grid.Column="1">
+                            <StackPanel Orientation="Horizontal"
+                                        IsEnabled="{c:Binding ConnectionViewModel.IsLogin}"
+                                        HorizontalAlignment="Right">
+                                <ComboBox Style="{StaticResource NewsTypeComboBox}"
+                                          IsEnabled="{c:Binding '!IsRunning'}"
+                                          SelectedValuePath="Tag"
+                                          SelectedValue="{Binding NewsType, FallbackValue=news}">
+                                    <ComboBoxItem Content="Common" Tag="news" />
+                                    <ComboBoxItem Content="Sports" Tag="sports" />
+                                </ComboBox>
+
+                                <Button Content="{Binding LoadButtonText, FallbackValue=Load}"
+                                        IsEnabled="{c:Binding !IsCommentRemoving}"
+                                        Style="{StaticResource OperationButton}"
+                                        Command="{Binding UpdateCommentCommand}"/>
+
+                                <Button Content="{Binding ClearButtonText, FallbackValue=Clear}"
+                                        IsEnabled="{c:Binding !IsCommentLoading}"
+                                        Style="{StaticResource OperationButton}"
+                                        Command="{Binding ClearCommentCommand}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0 20 0 0">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Cleanup options"
+                                           Style="{StaticResource GroupTitle}"/>
+                                <StackPanel Style="{StaticResource OptionContainer}"
+                                                IsEnabled="{c:Binding '!IsRunning'}">
+                                    <component:OptionComponent Style="{StaticResource OptionComponent}"
+                                                               Text="Cleanup after loading"
+                                                               ButtonText="{Binding CleanUpAfterLoadingText, FallbackValue=On}"
+                                                               Command="{Binding CleanUpAfterLoadingCommand}"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Cleanup status"
+                                           Style="{StaticResource GroupTitle}" />
+                                <UniformGrid Style="{StaticResource StatusContainer}">
+                                    <TextBlock Text="Progress"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding RemoveProgress, StringFormat={}{0:0.##}%}"
+                                               Style="{StaticResource StatusComponentValue}"/>
+
+                                    <TextBlock Text="Remove count"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding RemoveCount}"
+                                               Style="{StaticResource StatusComponentValue}"/>
+
+                                    <TextBlock Text="Response"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding ResponseText, FallbackValue=요청을 성공적으로 수행했습니다.}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Style="{StaticResource StatusComponentValue}"/>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource ContainerWrapper}">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Top"
+                                           Style="{StaticResource ContainerHeader}">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} of {1} comments are loaded from boyism80 (NAVER)">
+                                            <Binding Path="ConnectionViewModel.CommentItems.Count" />
+                                            <Binding Path="ConnectionViewModel.TotalCommentCount" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <container:ComponentContainer DockPanel.Dock="Bottom"
+                                                              ItemsSource="{Binding ConnectionViewModel.CommentItems}"/>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Visibility="Collapsed"
+                         DataContext="{Binding CommentWriterViewModel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <Border Grid.Row="0"
+                                Grid.Column="0">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="KPU Comment Writer"
+                                           Style="{StaticResource TabTitle}"/>
+                                <TextBlock Style="{StaticResource TabDesc}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="0"
+                                Grid.Column="1">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                <ComboBox Style="{StaticResource NewsTypeComboBox}" 
+                                          IsEnabled="{c:Binding '!IsRunning'}"
+                                          Width="120"
+                                          SelectedValuePath="Tag"
+                                          SelectedValue="{Binding NewsType, FallbackValue=kbaseball}">
+                                    <ComboBoxItem Content="Baseball" Tag="kbaseball" />
+                                    <ComboBoxItem Content="World Baseball" Tag="wbaseball" />
+                                    <ComboBoxItem Content="Football" Tag="kfootball" />
+                                    <ComboBoxItem Content="World Football" Tag="wfootball" />
+                                    <ComboBoxItem Content="Basketball" Tag="basketball" />
+                                    <ComboBoxItem Content="Volleyball" Tag="volleyball" />
+                                    <ComboBoxItem Content="Golf" Tag="golf" />
+                                    <ComboBoxItem Content="General" Tag="general" />
+                                    <ComboBoxItem Content="E-sports" Tag="esports" />
+                                </ComboBox>
+
+                                <Button Content="{Binding LoadButtonText, FallbackValue=Load}"
+                                        IsEnabled="{c:Binding !IsCommentWriting}"
+                                        Style="{StaticResource OperationButton}"
+                                        Command="{Binding UpdateNewsCommand}"/>
+
+                                <Button Content="{Binding WriteButtonText, FallbackValue=Write}"
+                                        IsEnabled="{c:Binding 'ConnectionViewModel.IsLogin and !IsNewsLoading'}"
+                                        Style="{StaticResource OperationButton}"
+                                        Command="{Binding WriteCommentCommand}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Grid.Row="1"
+                                Grid.Column="0"
+                                MinWidth="320"
+                                Margin="0 20 0 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Vertical"
+                                        Grid.Row="0">
+                                <TextBlock Text="Writing options"
+                                           Style="{StaticResource GroupTitle}"/>
+                                <StackPanel Style="{StaticResource OptionContainer}"
+                                            IsEnabled="{c:Binding '!IsRunning'}">
+                                    <Grid Margin="0 0 0 10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Start date"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="11"
+                                                   Foreground="White"/>
+                                        <Viewbox Stretch="None"
+                                                 Grid.Column="1" 
+                                                 HorizontalAlignment="Right">
+                                            <DatePicker 
+                                                    SelectedDate="{Binding StartDateTime}" />
+                                        </Viewbox>
+                                    </Grid>
+                                    <component:OptionComponent Style="{StaticResource OptionComponent}"
+                                                               Text="Write after loading"
+                                                               ButtonText="{Binding WriteAfterLoadingText}"
+                                                               Command="{Binding WriteAfterLoadingCommand}"/>
+
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Vertical"
+                                        Grid.Row="1">
+                                <TextBlock Text="Writing status"
+                                           Style="{StaticResource GroupTitle}"/>
+                                <UniformGrid Style="{StaticResource StatusContainer}">
+                                    <TextBlock Text="Progress"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding WritingProgress, StringFormat={}{0:0.##}%, FallbackValue=0%}"
+                                               Style="{StaticResource StatusComponentValue}"/>
+
+                                    <TextBlock Text="Writing count"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding WritingCount, FallbackValue=0}"
+                                               Style="{StaticResource StatusComponentValue}"/>
+                                    <TextBlock Text="Remaining seconds"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding RemainingSeconds, StringFormat={}{0}s, FallbackValue=57s}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Style="{StaticResource StatusComponentValue}"/>
+                                    <TextBlock Text="Lastest message"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding LastestMessage, FallbackValue=Lastest message}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Style="{StaticResource StatusComponentValue}"/>
+                                    <TextBlock Text="Response"
+                                               Style="{StaticResource StatusComponentTitle}"/>
+                                    <TextBlock Text="{Binding ResponseText, FallbackValue=요청을 성공적으로 수행했습니다.}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Style="{StaticResource StatusComponentValue}"/>
+                                </UniformGrid>
+                            </StackPanel>
+
+                            <Grid Grid.Row="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2" 
+                                           Text="Writing messages"
+                                           Style="{StaticResource GroupTitle}"/>
+                                <container:WriteMessageContainer
+                                    ItemsSource="{Binding MessageList}"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Margin="0 0 0 10"
+                                    RemoveCommand="{Binding RemoveMessageCommand}"/>
+                                <TextBox Grid.Row="2"
+                                         Grid.Column="0"
+                                         Margin="0 0 10 0"
+                                         Text="{Binding CurrentMessage}"
+                                         Tag="message"/>
+                                <Button Grid.Row="2"
+                                        Grid.Column="1"
+                                        Command="{Binding AddMessageCommand}"
+                                        Content="Add"/>
+                            </Grid>
+                        </Grid>
+
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource ContainerWrapper}">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Top"
+                                           Style="{StaticResource ContainerHeader}"
+                                           Text="{Binding ConnectionViewModel.NewsItems.Count, StringFormat={}{0} news are loaded}" />
+                                <container:ComponentContainer DockPanel.Dock="Bottom"
+                                                              ItemsSource="{Binding ConnectionViewModel.NewsItems}"/>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Border>
+</Window>
